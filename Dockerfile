@@ -38,5 +38,4 @@ RUN mkdir -p /etc/ldap/slapd.d && \
     chmod a+rwx -R  /usr/sbin/
 
 EXPOSE 389 636
-USER 1001
 CMD ["/opt/run.sh"]
