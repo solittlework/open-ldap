@@ -9,8 +9,9 @@ RUN apt-get update \
             ldap-utils \
             openssl \
             ca-certificates \
+             libcap2-bin \
     && rm -rf /var/lib/apt/lists/* \
-    && mkdir /etc/ldap/ssl /bootstrap
+    && mkdir /etc/ldap/ssl /bootstrap \
 
 ENV LDAP_DEBUG_LEVEL=256
 
@@ -23,7 +24,7 @@ ADD ./bootstrap /bootstrap
 RUN /bin/bash /bootstrap/slapd-init.sh
 
 COPY ./run.sh /opt/run.sh
-
+RUN setcap 'cap_net_bind_service=+ep' /usr/sbin/slapd
 RUN mkdir -p /etc/ldap/slapd.d && \
     chmod a+rwx -R /etc/ldap/slapd.d  && \
     mkdir -p /var/lib/ldap && \
@@ -34,8 +35,10 @@ RUN mkdir -p /etc/ldap/slapd.d && \
     chmod a+rwx -R  /run/slapd && \
     mkdir -p /opt && \
     chmod a+rwx -R  /opt && \
-    mkdir -p //usr/sbin/ && \
+    mkdir -p /usr/sbin/ && \
     chmod a+rwx -R  /usr/sbin/
+
+USER 1001
 
 EXPOSE 389 636
 CMD ["/opt/run.sh"]
