@@ -24,6 +24,7 @@ ADD ./bootstrap /bootstrap
 RUN /bin/bash /bootstrap/slapd-init.sh
 
 COPY ./run.sh /opt/run.sh
+RUN chmod 755 /opt/run.sh
 RUN setcap 'cap_net_bind_service=+ep' /usr/sbin/slapd
 RUN mkdir -p /etc/ldap/slapd.d && \
     chmod a+rwx -R /etc/ldap/slapd.d  && \
